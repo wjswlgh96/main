@@ -12,6 +12,7 @@ import {
   Switcher,
   Error,
 } from "../components/auto-components";
+import GithubButton from "../components/github-btn";
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -96,6 +97,7 @@ export default function CreateAccount() {
       <Switcher>
         계정이 이미 있으신가요? <Link to="/login">로그인하기 &rarr;</Link>
       </Switcher>
+      <GithubButton />
     </Wrapper>
   );
 }

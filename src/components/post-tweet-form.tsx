@@ -60,7 +60,7 @@ const SubmitBtn = styled.input`
   }
 `;
 
-export default function PostTweetForm() {
+export default function PostTweetForm({ isEdit }: { isEdit: boolean }) {
   const [isLoading, setIsLoading] = useState(false);
   const [tweet, setTweet] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -70,8 +70,9 @@ export default function PostTweetForm() {
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
+    if (isEdit) return;
 
+    const { files } = e.target;
     if (files && files.length === 1) {
       if (files[0].size > 1000000) {
         confirm("1MB 이하의 이미지만 추가가 가능합니다.");
@@ -98,10 +99,7 @@ export default function PostTweetForm() {
       });
 
       if (file) {
-        const locationRef = ref(
-          storage,
-          `tweets/${user.uid}-${user.displayName}/${doc.id}`
-        );
+        const locationRef = ref(storage, `tweets/${user.uid}/${doc.id}`);
         const result = await uploadBytes(locationRef, file);
         const url = await getDownloadURL(result.ref);
         await updateDoc(doc, {

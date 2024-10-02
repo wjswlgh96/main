@@ -1,4 +1,5 @@
-import styled from "styled-components";
+import { useState } from "react";
+import { styled } from "styled-components";
 import PostTweetForm from "../components/post-tweet-form";
 import Timeline from "../components/timeline";
 
@@ -9,10 +10,12 @@ const Wrapper = styled.div`
 `;
 
 export default function Home() {
+  const [isEdit, setIsEdit] = useState(false);
+
   return (
     <Wrapper>
-      <PostTweetForm />
-      <Timeline />
+      <PostTweetForm isEdit={isEdit} />
+      <Timeline setIsEdit={setIsEdit} />
     </Wrapper>
   );
 }

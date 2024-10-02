@@ -1,40 +1,64 @@
-import styled from "styled-components";
-import { ITweet } from "./timeline";
+import { TweetType } from "../type/tweet";
+import { auth, db, storage } from "../firebase";
+import { deleteDoc, doc } from "firebase/firestore";
+import { deleteObject, ref } from "firebase/storage";
+import {
+  Column,
+  DeleteButton,
+  EditButton,
+  Payload,
+  Photo,
+  Username,
+  Wrapper,
+} from "./tweet-components";
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  padding: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 15px;
-`;
+export default function Tweet({
+  username,
+  photo,
+  tweet,
+  userId,
+  id,
+  onIsEdit,
+}: TweetType) {
+  const user = auth.currentUser;
 
-const Column = styled.div``;
+  const onDelete = async () => {
+    const ok = confirm("정말 이 트윗을 삭제하시겠습니까?");
+    if (!ok || user?.uid !== userId) return;
+    try {
+      await deleteDoc(doc(db, "tweets", id));
+      if (photo) {
+        const photoRef = ref(storage, `tweets/${user.uid}/${id}`);
+        await deleteObject(photoRef);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      //
+    }
+  };
 
-const Photo = styled.img`
-  width: 100px;
-  height: 100px;
-  border-radius: 15px;
-`;
-
-const Username = styled.span`
-  font-weight: 600;
-  font-size: 15px;
-`;
-
-const Payload = styled.p`
-  margin: 10px 0px;
-  font-size: 18px;
-`;
-
-export default function Tweet({ username, photo, tweet }: ITweet) {
   return (
     <Wrapper>
       <Column>
         <Username>{username}</Username>
         <Payload>{tweet}</Payload>
+        {user?.uid === userId ? (
+          <EditButton
+            onClick={() => {
+              if (onIsEdit) onIsEdit(id);
+            }}
+          >
+            수정하기
+          </EditButton>
+        ) : null}
+        {user?.uid === userId ? (
+          <DeleteButton onClick={onDelete}>삭제하기</DeleteButton>
+        ) : null}
       </Column>
-      <Column>{photo ? <Photo src={photo} /> : null}</Column>
+      <Column className="photo-column">
+        {photo ? <Photo src={photo} /> : null}
+      </Column>
     </Wrapper>
   );
 }

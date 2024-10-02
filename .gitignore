@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Auth
-firebase.ts
+/src/firebase.ts

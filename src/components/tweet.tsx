@@ -1,4 +1,3 @@
-import { TweetType } from "../type/tweet";
 import { auth, db, storage } from "../firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
@@ -11,15 +10,12 @@ import {
   Username,
   Wrapper,
 } from "./tweet-components";
+import { TweetProps } from "../type/props/tweet";
 
-export default function Tweet({
-  username,
-  photo,
-  tweet,
-  userId,
-  id,
-  onIsEdit,
-}: TweetType) {
+export default function Tweet(props: TweetProps) {
+  const { tweets, setEditId } = props;
+  const { id, userId, username, photo, tweet } = tweets;
+
   const user = auth.currentUser;
 
   const onDelete = async () => {
@@ -46,7 +42,7 @@ export default function Tweet({
         {user?.uid === userId ? (
           <EditButton
             onClick={() => {
-              if (onIsEdit) onIsEdit(id);
+              setEditId(id);
             }}
           >
             수정하기

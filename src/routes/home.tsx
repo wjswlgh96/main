@@ -10,12 +10,12 @@ const Wrapper = styled.div`
 `;
 
 export default function Home() {
-  const [isEdit, setIsEdit] = useState(false);
+  const [editId, setEditId] = useState("");
 
   return (
     <Wrapper>
-      <PostTweetForm isEdit={isEdit} />
-      <Timeline setIsEdit={setIsEdit} />
+      <PostTweetForm editId={editId} />
+      <Timeline editId={editId} setEditId={setEditId} />
     </Wrapper>
   );
 }

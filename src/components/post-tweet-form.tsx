@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { auth, db, storage } from "../firebase";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { PostTweetFormProps } from "../type/props/post-tweet-form";
 
 const Form = styled.form`
   display: flex;
@@ -60,7 +61,7 @@ const SubmitBtn = styled.input`
   }
 `;
 
-export default function PostTweetForm({ isEdit }: { isEdit: boolean }) {
+export default function PostTweetForm({ editId }: PostTweetFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [tweet, setTweet] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -70,7 +71,7 @@ export default function PostTweetForm({ isEdit }: { isEdit: boolean }) {
   };
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isEdit) return;
+    if (editId !== "") return;
 
     const { files } = e.target;
     if (files && files.length === 1) {
@@ -80,6 +81,7 @@ export default function PostTweetForm({ isEdit }: { isEdit: boolean }) {
       }
 
       setFile(files[0]);
+      e.currentTarget.value = "";
     }
   };
 

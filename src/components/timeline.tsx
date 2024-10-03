@@ -12,15 +12,8 @@ import { db } from "../firebase";
 import Tweet from "./tweet";
 import { Unsubscribe } from "firebase/auth";
 import EditTweet from "./edittweet";
-
-export interface ITweet {
-  id: string;
-  photo?: string;
-  tweet: string;
-  userId: string;
-  username: string;
-  createdAt: number;
-}
+import { TweetDataType } from "../type/data/tweet";
+import { TimeLineProps } from "../type/props/timeline";
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,28 +21,12 @@ const Wrapper = styled.div`
   flex-direction: column;
 `;
 
-export default function Timeline({
-  setIsEdit,
-}: {
-  setIsEdit: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
-  const [tweets, setTweet] = useState<ITweet[]>([]);
-  const [editId, setEditId] = useState("");
+export default function Timeline(props: TimeLineProps) {
+  const { editId, setEditId } = props;
+  const [tweets, setTweet] = useState<TweetDataType[]>([]);
 
-  const onIsEdit = (value: string) => {
-    setIsEdit(true);
-    setEditId(value);
-  };
-
-  const editInit = () => {
-    setIsEdit(false);
-    setEditId("");
-  };
-
-  const onCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const onEditCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e) e.preventDefault();
-
-    setIsEdit(false);
     setEditId("");
   };
 
@@ -89,13 +66,13 @@ export default function Timeline({
         return editId === tweet.id ? (
           <EditTweet
             key={tweet.id}
-            {...tweet}
+            tweets={tweet}
             editId={editId}
-            editInit={editInit}
-            onCancel={onCancel}
+            setEditId={setEditId}
+            onEditCancel={onEditCancel}
           />
         ) : (
-          <Tweet key={tweet.id} {...tweet} onIsEdit={onIsEdit} />
+          <Tweet key={tweet.id} tweets={tweet} setEditId={setEditId} />
         );
       })}
     </Wrapper>

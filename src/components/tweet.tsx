@@ -42,7 +42,7 @@ export default function Tweet(props: TweetProps) {
         {user?.uid === userId ? (
           <EditButton
             onClick={() => {
-              setEditId(id);
+              if (setEditId) setEditId(id);
             }}
           >
             수정하기
